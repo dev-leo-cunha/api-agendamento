@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { UserAuth, userCreate, userUpdate } from "../services/UserServices";
+import * as UserServices from "../services/UserServices";
 
 export const ping = async (req: Request, res: Response, next: NextFunction) => {
   res.json({ ping: true });
@@ -20,7 +20,7 @@ export const store = async (
 ) => {
   const { name, email, password } = req.body;
   try {
-    const result = await userCreate(name, email, password);
+    const result = await UserServices.userCreate(name, email, password);
 
     return res.status(201).json(result);
   } catch (error) {
@@ -31,7 +31,16 @@ export const store = async (
 export const auth = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
   try {
-    const result = await UserAuth(email, password);
+    const result = await UserServices.UserAuth(email, password);
+    return res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+export const refresh = async (req: Request, res: Response, next: NextFunction) => {
+  const { refresh_token } = req.body;
+  try {
+    const result = await UserServices.UserRefresh(refresh_token);
     return res.json(result);
   } catch (error) {
     next(error);
@@ -47,7 +56,7 @@ export const update = async (
   const { user_id } = req;
 
   try {
-    const result = await userUpdate({
+    const result = await UserServices.userUpdate({
       name,
       oldPassword,
       newPassword,

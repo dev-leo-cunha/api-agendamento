@@ -1,7 +1,7 @@
 import { prisma } from "../database/prisma";
 import { ICreate } from "../interfaces/UsersInterfaces";
 
-export const UserRepository = async ({ name, email, password }: ICreate) => {
+export const create = async ({ name, email, password }: ICreate) => {
   const result = await prisma.users.create({
     data: {
       name,
